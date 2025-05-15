@@ -12,30 +12,15 @@ namespace DecodeLabs\Chronicle\ChangeLog\Block\Parsed;
 use Carbon\Carbon;
 use DecodeLabs\Chronicle\ChangeLog\Block\Parsed;
 use DecodeLabs\Chronicle\ChangeLog\Block\Release as ReleaseInterface;
+use DecodeLabs\Chronicle\ChangeLog\Block\ReleaseTrait;
 use DecodeLabs\Chronicle\ChangeLog\BlockTrait;
 use DecodeLabs\Chronicle\ChangeLog\Renderer;
 
 class Release implements Parsed, ReleaseInterface
 {
     use BlockTrait;
+    use ReleaseTrait;
 
-    public string $version;
-
-    public ?Carbon $date = null {
-        get => $this->date;
-        set(
-            string|Carbon|null $value
-        ) {
-            if(is_string($value)) {
-                $value = Carbon::parse($value);
-            }
-
-            $this->date = $value;
-        }
-    }
-
-    public ?string $commitsUrl = null;
-    public ?string $comparisonUrl = null;
 
     public ?string $header;
 
@@ -60,17 +45,17 @@ class Release implements Parsed, ReleaseInterface
 
             $this->body = $this->starToDash($this->body);
 
-            if($this->comparisonUrl !== null) {
+            if($this->compareUrl !== null) {
                 $inBody = false;
 
                 foreach($this->body as $key => $line) {
-                    if(str_contains($line, $this->comparisonUrl)) {
+                    if(str_contains($line, $this->compareUrl)) {
                         $inBody = true;
                     }
                 }
 
                 if(!$inBody) {
-                    $this->body[] = "\n[Full list of changes](" . $this->comparisonUrl . ")";
+                    $this->body[] = "\n" . '[Full list of changes](' . $this->compareUrl . ')';
                 }
             }
         }
@@ -84,7 +69,7 @@ class Release implements Parsed, ReleaseInterface
         if($this->header !== null) {
             $output .= $this->header . "\n";
         } else {
-            $output .= $renderer->renderReleaseHeader($this) . "\n";
+            $output .= $renderer->renderReleaseHeader($this) . "\n\n";
         }
 
         $output .= implode("\n", $this->body);

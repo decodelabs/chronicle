@@ -13,4 +13,5 @@ use DecodeLabs\Chronicle\ChangeLog\Block;
 
 interface Unreleased extends Block
 {
+    public function extractAsNotes(): ?string;
 }

@@ -9,7 +9,10 @@ declare(strict_types=1);
 
 namespace DecodeLabs\Chronicle\ChangeLog\Renderer;
 
+use DecodeLabs\Chronicle\ChangeLog\Block\Buffered\NextRelease;
 use DecodeLabs\Chronicle\ChangeLog\Block\Buffered\StandardPreamble;
+use DecodeLabs\Chronicle\ChangeLog\Block\Issue;
+use DecodeLabs\Chronicle\ChangeLog\Block\PullRequest;
 use DecodeLabs\Chronicle\ChangeLog\Block\Release;
 use DecodeLabs\Chronicle\ChangeLog\Block\Unreleased;
 use DecodeLabs\Chronicle\ChangeLog\Renderer;
@@ -32,7 +35,7 @@ class Generic implements Renderer
     ): string {
         $output = '## ';
 
-        $url = $release->commitsUrl ?? $release->comparisonUrl;
+        $url = $release->commitsUrl ?? $release->compareUrl;
 
         if($url !== null) {
             $output .= '[' . $release->version . '](' . $url . ')';
@@ -42,6 +45,71 @@ class Generic implements Renderer
 
         if($release->date) {
             $output .= ' - ' . $release->date->format('jS F Y');
+        }
+
+        return $output;
+    }
+
+    public function renderNextRelease(
+        NextRelease $release
+    ): string {
+        $output = $this->renderReleaseHeader($release) . "\n\n";
+
+        if(!empty($release->notes)) {
+            $output .= $release->notes . "\n\n";
+        }
+
+        if(!empty($release->pullRequests)) {
+            $output .= '### Merged Pull Requests' . "\n";
+
+            foreach($release->pullRequests as $issue) {
+                $output .= '- ' . $this->renderPullRequest($issue) . "\n";
+            }
+
+            $output .= "\n";
+        }
+
+        if(!empty($release->issues)) {
+            $output .= '### Closed Issues' . "\n";
+
+            foreach($release->issues as $issue) {
+                $output .= '- ' . $this->renderIssue($issue) . "\n";
+            }
+
+            $output .= "\n";
+        }
+
+        if(
+            $release->commitsUrl &&
+            $release->compareUrl
+        ) {
+            $output .= '[Full list of changes](' . $release->compareUrl . ')';
+        }
+
+        return $output;
+    }
+
+    public function renderIssue(
+        Issue $issue
+    ): string {
+        $output = $issue->title . ' ';
+        $output .= '\[[' . $issue->number . '](' . $issue->url . ')\]';
+
+        if($issue->username !== null) {
+            $output .= ' - @' . $issue->username;
+        }
+
+        return $output;
+    }
+
+    public function renderPullRequest(
+        PullRequest $issue
+    ): string {
+        $output = $issue->title . ' ';
+        $output .= '\[[' . $issue->number . '](' . $issue->url . ')\]';
+
+        if($issue->username !== null) {
+            $output .= ' - @' . $issue->username;
         }
 
         return $output;

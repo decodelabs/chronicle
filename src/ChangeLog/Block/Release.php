@@ -18,5 +18,5 @@ interface Release extends Block
     public ?Carbon $date { get; }
 
     public ?string $commitsUrl { get; }
-    public ?string $comparisonUrl { get; }
+    public ?string $compareUrl { get; }
 }

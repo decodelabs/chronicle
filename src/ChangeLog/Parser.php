@@ -12,6 +12,7 @@ namespace DecodeLabs\Chronicle\ChangeLog;
 use DecodeLabs\Chronicle\ChangeLog\Block\Parsed\Preamble;
 use DecodeLabs\Chronicle\ChangeLog\Block\Parsed\Release;
 use DecodeLabs\Chronicle\ChangeLog\Block\Parsed\Unreleased;
+use DecodeLabs\Chronicle\Repository;
 use DecodeLabs\Exceptional;
 
 class Parser
@@ -30,7 +31,10 @@ class Parser
             );
         }
 
-        if(!is_file($path)) {
+        if(
+            !is_file($path) &&
+            !$rewrite
+        ) {
             throw Exceptional::NotFound(
                 message: 'Changelog file not found',
                 data: $path
@@ -41,18 +45,21 @@ class Parser
         $this->rewrite = $rewrite;
     }
 
-    public function parse(): Document
-    {
-        $doc = new Document();
+    public function parse(
+        ?Repository $repository = null
+    ): Document {
+        $doc = new Document($this->path);
         $releases = [];
 
         foreach($this->parseFile() as $block) {
             if($block instanceof Preamble) {
+                $block->consolidate($this->rewrite);
                 $doc->preamble = $block;
                 continue;
             }
 
             if($block instanceof Unreleased) {
+                $block->consolidate($this->rewrite);
                 $doc->unreleased = $block;
                 continue;
             }
@@ -61,6 +68,39 @@ class Parser
                 $releases[] = $block;
                 continue;
             }
+        }
+
+
+        $previousVersion = null;
+        $service = $repository?->service;
+
+        foreach(array_reverse($releases) as $release) {
+            if(
+                $this->rewrite &&
+                $repository
+            ) {
+                if($release->commitsUrl === null) {
+                    $release->commitsUrl = $service?->getReleaseCommitsUrl(
+                        (string)$repository->name,
+                        $release->version
+                    );
+                }
+
+                if(
+                    $release->compareUrl === null &&
+                    $previousVersion !== null
+                ) {
+                    $release->compareUrl = $service?->getReleaseCompareUrl(
+                        (string)$repository->name,
+                        $previousVersion,
+                        $release->version,
+                    );
+                }
+
+                $previousVersion = $release->version;
+            }
+
+            $release->consolidate($this->rewrite);
         }
 
         $doc->addReleases($releases);
@@ -72,6 +112,10 @@ class Parser
      */
     private function parseFile(): iterable
     {
+        if(!is_file($this->path)) {
+            return;
+        }
+
         $lines = file($this->path, FILE_IGNORE_NEW_LINES);
         $block = null;
         $preambled = false;
@@ -81,8 +125,8 @@ class Parser
             $line = array_shift($lines);
 
             if(
-                (!$preambled && ($newBlock = $this->parsePreamble($line))) ||
                 (!$unreleased && ($newBlock = $this->parseUnreleased($line))) ||
+                (!$preambled && ($newBlock = $this->parsePreamble($line))) ||
                 ($newBlock = $this->parseReleaseHeader($line))
             ) {
                 $preambled = true;
@@ -95,7 +139,6 @@ class Parser
                 }
 
                 if($block !== null) {
-                    $block->consolidate($this->rewrite);
                     yield $block;
                 }
 
@@ -111,7 +154,6 @@ class Parser
         }
 
         if($block) {
-            $block->consolidate($this->rewrite);
             yield $block;
         }
     }
@@ -161,7 +203,7 @@ class Parser
         }
 
         if(preg_match('|https://github\.com/[^/]+/[^/]+/compare/[v0-9.]+|', $line, $matches)) {
-            $output->comparisonUrl = $matches[0];
+            $output->compareUrl = $matches[0];
         } elseif(preg_match('|https://github\.com/[^/]+/[^/]+/commits/[v0-9.]+|', $line, $matches)) {
             $output->commitsUrl = $matches[0];
         }

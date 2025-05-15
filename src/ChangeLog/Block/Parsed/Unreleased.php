@@ -36,6 +36,17 @@ class Unreleased implements Parsed, UnreleasedInterface
         }
     }
 
+    public function extractAsNotes(): ?string
+    {
+        if(empty($this->body)) {
+            return null;
+        }
+
+        $output = implode("\n", $this->body);
+        $this->body = [];
+        return $output;
+    }
+
     public function render(
         Renderer $renderer,
     ): string {
@@ -47,7 +58,11 @@ class Unreleased implements Parsed, UnreleasedInterface
             $output .= $renderer->renderUnreleasedHeader($this) . "\n";
         }
 
-        $output .= implode("\n", $this->body);
+        if(!empty($this->body)) {
+            $output .= implode("\n", $this->body);
+            $output .= "\n";
+        }
+
         return $output;
     }
 }
