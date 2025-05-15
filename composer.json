@@ -2,15 +2,20 @@
     "name": "decodelabs/chronicle",
     "description": "Release notes generator",
     "type": "library",
-    "keywords": [],
+    "keywords": [ ],
     "license": "MIT",
-    "authors": [{
-        "name": "Tom Wright",
-        "email": "tom@inflatablecookie.com"
-    }],
+    "authors": [ {
+            "name": "Tom Wright",
+            "email": "tom@inflatablecookie.com"
+        } ],
     "require": {
         "php": "^8.4",
-        "decodelabs/exceptional": "^0.5.3"
+
+        "decodelabs/atlas": "^0.12.5",
+        "decodelabs/exceptional": "^0.5.3",
+
+        "composer/semver": "^3.4",
+        "nesbot/carbon": "^3.9"
     },
     "require-dev": {
         "decodelabs/phpstan-decodelabs": "^0.7.0"
