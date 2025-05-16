@@ -72,7 +72,7 @@ class Document implements Stringable
         return $this->releases[array_key_first($this->releases)];
     }
 
-    public function applyNextRelease(
+    public function generateNextRelease(
         string|VersionChange $version,
         ?Repository $repository = null,
         string|Carbon|null $date = null,
