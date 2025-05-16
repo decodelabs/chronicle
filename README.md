@@ -112,7 +112,7 @@ if your project is hosted on GitHub, `generateNextRelease()` will automatically 
 You can render the change log document to a string using the `render()` method, or back to the original file using `save()`. When you call either of these methods, you can specify a `Renderer` implementation which you can use to customize the output format. If ommitted, the default renderer will be used.
 
 ```php
-use MyApp\Chronicle\ChangeLog\Renderer;
+use DecodeLabs\Chronicle\ChangeLog\Renderer;
 use MyApp\Chronicle\ChangeLog\Renderer\MyCustomRenderer;
 
 $doc->render(
