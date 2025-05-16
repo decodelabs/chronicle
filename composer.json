@@ -1,0 +1,46 @@
+{
+    "name": "decodelabs/chronicle",
+    "description": "Release notes generator",
+    "type": "library",
+    "keywords": [ ],
+    "license": "MIT",
+    "authors": [ {
+            "name": "Tom Wright",
+            "email": "tom@inflatablecookie.com"
+        } ],
+    "require": {
+        "php": "^8.4",
+
+        "decodelabs/atlas": "^0.12.5",
+        "decodelabs/dovetail": "^0.2.12",
+        "decodelabs/enumerable": "^0.2.1",
+        "decodelabs/exceptional": "^0.5.3",
+        "decodelabs/monarch": "^0.1.2",
+        "decodelabs/stash": "^0.6.3",
+
+        "nesbot/carbon": "^3.9",
+        "guzzlehttp/guzzle": "^7.0.1",
+        "http-interop/http-factory-guzzle": "^1.0",
+        "knplabs/github-api": "^3.0",
+        "z4kn4fein/php-semver": "^3.0"
+    },
+    "require-dev": {
+        "decodelabs/phpstan-decodelabs": "^0.7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "DecodeLabs\\Chronicle\\": "src/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-develop": "0.1.x-dev"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "phpstan/extension-installer": true,
+            "php-http/discovery": true
+        }
+    }
+}
