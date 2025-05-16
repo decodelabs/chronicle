@@ -193,12 +193,13 @@ class Document implements Stringable
     }
 
     public function save(
-        ?Renderer $renderer = null
+        ?Renderer $renderer = null,
+        ?string $path = null
     ): File {
         $output = $this->render($renderer);
 
         return Atlas::createFile(
-            $this->path,
+            $path ?? $this->path,
             $output
         );
     }
