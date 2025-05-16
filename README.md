@@ -86,13 +86,15 @@ You can add unreleased changes to the change log in the `Unreleased` section as 
 
 ```php
 $doc->generateNextRelease(
-    version: 'patch', // major, minor, patch, breaking, feature or v0.2.0
+    version: 'patch', // major, minor, patch, preRelease, breaking, feature or v0.2.0
     date: '2025-05-16', // optional, defaults to today
     repository: $repo
 );
 ```
 
 if your project is hosted on GitHub, `generateNextRelease()` will automatically fetch the latest issues and pull requests from the repository and add them to the release notes.
+
+if your project is private or you hit the API rate limit, you can place your access token in your `.env` file with the key `GITHUB_TOKEN`. Chronicle will automatically authenticate with the GitHub API using this token.
 
 ```markdown
 ## [v0.2.0](https://github.com/decodelabs/chronicle/commits/v0.2.0) - 16th May 2025
