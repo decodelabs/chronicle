@@ -64,16 +64,7 @@ class Release implements Parsed, ReleaseInterface
     public function render(
         Renderer $renderer
     ): string {
-        $output = '';
-
-        if($this->header !== null) {
-            $output .= $this->header . "\n";
-        } else {
-            $output .= $renderer->renderReleaseHeader($this) . "\n\n";
-        }
-
-        $output .= implode("\n", $this->body);
-        return $output;
+        return $renderer->renderParsedRelease($this);
     }
 }
 

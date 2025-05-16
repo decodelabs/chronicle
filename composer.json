@@ -16,12 +16,12 @@
         "decodelabs/enumerable": "^0.2.1",
         "decodelabs/exceptional": "^0.5.3",
         "decodelabs/monarch": "^0.1.2",
-        "decodelabs/stash": "^0.6.2",
+        "decodelabs/stash": "^0.6.3",
 
         "nesbot/carbon": "^3.9",
-        "knplabs/github-api": "^3.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "http-interop/http-factory-guzzle": "^1.0",
+        "knplabs/github-api": "^3.0",
         "z4kn4fein/php-semver": "^3.0"
     },
     "require-dev": {

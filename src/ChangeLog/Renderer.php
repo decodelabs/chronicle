@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace DecodeLabs\Chronicle\ChangeLog;
 
 use DecodeLabs\Chronicle\ChangeLog\Block\Buffered\NextRelease;
+use DecodeLabs\Chronicle\ChangeLog\Block\Parsed\Release as ParsedRelease;
 use DecodeLabs\Chronicle\ChangeLog\Block\Issue;
 use DecodeLabs\Chronicle\ChangeLog\Block\Preamble;
 use DecodeLabs\Chronicle\ChangeLog\Block\PullRequest;
@@ -30,6 +31,10 @@ interface Renderer
 
     public function renderNextRelease(
         NextRelease $release
+    ): string;
+
+    public function renderParsedRelease(
+        ParsedRelease $release
     ): string;
 
     public function renderIssue(

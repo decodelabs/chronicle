@@ -31,7 +31,7 @@ class GitHub implements Service
             $this->client = new ApiClient();
 
             $this->client->addCache(
-                Stash::load(self::class)
+                Stash::loadStealth(self::class)
             );
 
             if(null !== ($token = Dovetail::envString('GITHUB_TOKEN'))) {

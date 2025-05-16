@@ -25,7 +25,14 @@ trait BlockTrait
             array_shift($lines);
         }
 
-        while (count($lines) && trim($lines[count($lines) - 1]) === '') {
+        while (
+            count($lines) &&
+            match(trim($lines[count($lines) - 1])) {
+                '',
+                '---' => true,
+                default => false
+            }
+        ) {
             array_pop($lines);
         }
 

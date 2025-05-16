@@ -72,17 +72,20 @@ class Document implements Stringable
         return $this->releases[array_key_first($this->releases)];
     }
 
-    public function generateNextRelease(
-        string|VersionChange $version,
-        ?Repository $repository = null,
-        string|Carbon|null $date = null,
-    ): void {
-        $date ??= Carbon::now();
+    public function hasVersion(
+        string $version
+    ): bool {
+        return isset($this->releases[$version]);
+    }
 
-        if(is_string($date)) {
-            $date = Carbon::parse($date);
-        }
+    public function getLastVersion(): ?string
+    {
+        return $this->getLastRelease()?->version;
+    }
 
+    public function validateNextVersion(
+        string|VersionChange $version
+    ): string {
         if(is_string($version)) {
             try {
                 $version = 'v' . SemverVersion::parse($version, false);
@@ -126,6 +129,22 @@ class Document implements Stringable
             );
         }
 
+        return $version;
+    }
+
+    public function generateNextRelease(
+        string|VersionChange $version,
+        ?Repository $repository = null,
+        string|Carbon|null $date = null,
+    ): void {
+        $date ??= Carbon::now();
+
+        if(is_string($date)) {
+            $date = Carbon::parse($date);
+        }
+
+        $version = $this->validateNextVersion($version);
+        $lastRelease = $this->getLastRelease();
         $lastDate = null;
 
         if($lastRelease) {
@@ -200,10 +219,10 @@ class Document implements Stringable
         }
 
         foreach ($this->releases as $release) {
-            $output .= $release->render($renderer) . "\n\n\n";
+            $output .= $release->render($renderer) . "\n\n";
         }
 
-        return trim($output);
+        return trim($output)."\n";
     }
 
     public function save(

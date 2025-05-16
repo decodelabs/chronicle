@@ -43,7 +43,13 @@ class Unreleased implements Parsed, UnreleasedInterface
         }
 
         $output = implode("\n", $this->body);
-        $this->body = [];
+        $output = trim($output);
+
+        if($output === '--') {
+            $output = null;
+        }
+
+        $this->body = ['--'];
         return $output;
     }
 
@@ -60,9 +66,8 @@ class Unreleased implements Parsed, UnreleasedInterface
 
         if(!empty($this->body)) {
             $output .= implode("\n", $this->body);
-            $output .= "\n";
         }
 
-        return $output;
+        return rtrim($output);
     }
 }

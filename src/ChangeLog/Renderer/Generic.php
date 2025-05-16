@@ -11,6 +11,7 @@ namespace DecodeLabs\Chronicle\ChangeLog\Renderer;
 
 use DecodeLabs\Chronicle\ChangeLog\Block\Buffered\NextRelease;
 use DecodeLabs\Chronicle\ChangeLog\Block\Buffered\StandardPreamble;
+use DecodeLabs\Chronicle\ChangeLog\Block\Parsed\Release as ParsedRelease;
 use DecodeLabs\Chronicle\ChangeLog\Block\Issue;
 use DecodeLabs\Chronicle\ChangeLog\Block\PullRequest;
 use DecodeLabs\Chronicle\ChangeLog\Block\Release;
@@ -27,13 +28,13 @@ class Generic implements Renderer
     public function renderUnreleasedHeader(
         Unreleased $unreleased
     ): string {
-        return '## Unreleased';
+        return '### Unreleased';
     }
 
     public function renderReleaseHeader(
         Release $release
     ): string {
-        $output = '## ';
+        $output = '### ';
 
         $url = $release->commitsUrl ?? $release->compareUrl;
 
@@ -50,43 +51,61 @@ class Generic implements Renderer
         return $output;
     }
 
+    public function renderParsedRelease(
+        ParsedRelease $release
+    ): string {
+        $output = "---\n\n";
+
+        if($release->header) {
+            $output .= rtrim($release->header) . "\n\n";
+        } else {
+            $output .= $this->renderReleaseHeader($release) . "\n\n";
+        }
+
+        if(!empty($release->body)) {
+            $output .= implode("\n", $release->body);
+        }
+
+        return rtrim($output);
+    }
+
     public function renderNextRelease(
         NextRelease $release
     ): string {
-        $output = $this->renderReleaseHeader($release) . "\n\n";
+        $output = "---\n\n";
+        $output .= $this->renderReleaseHeader($release) . "\n\n";
 
         if(!empty($release->notes)) {
-            $output .= $release->notes . "\n\n";
+            $output .= $release->notes . "\n";
         }
 
         if(!empty($release->pullRequests)) {
-            $output .= '### Merged Pull Requests' . "\n";
+            $output .= "\n";
+            $output .= '#### Merged Pull Requests' . "\n";
 
             foreach($release->pullRequests as $issue) {
                 $output .= '- ' . $this->renderPullRequest($issue) . "\n";
             }
-
-            $output .= "\n";
         }
 
         if(!empty($release->issues)) {
-            $output .= '### Closed Issues' . "\n";
+            $output .= "\n";
+            $output .= '#### Closed Issues' . "\n";
 
             foreach($release->issues as $issue) {
                 $output .= '- ' . $this->renderIssue($issue) . "\n";
             }
-
-            $output .= "\n";
         }
 
         if(
             $release->commitsUrl &&
             $release->compareUrl
         ) {
+            $output .= "\n";
             $output .= '[Full list of changes](' . $release->compareUrl . ')';
         }
 
-        return $output;
+        return rtrim($output);
     }
 
     public function renderIssue(

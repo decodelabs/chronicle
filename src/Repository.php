@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace DecodeLabs\Chronicle;
 
+use DecodeLabs\Atlas\Dir;
 use DecodeLabs\Chronicle\ChangeLog\Document;
 use DecodeLabs\Chronicle\Service\GitHub as GitHubService;
 use DecodeLabs\Exceptional;
@@ -73,9 +74,9 @@ class Repository
     }
 
     public function __construct(
-        ?string $path = null,
+        string|Dir|null $path = null,
     ) {
-        $this->path = $path ?? Monarch::$paths->root;
+        $this->path = (string)($path ?? Monarch::$paths->root);
     }
 
     public function parseChangeLog(
