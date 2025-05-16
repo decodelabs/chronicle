@@ -17,6 +17,7 @@
         "decodelabs/exceptional": "^0.5.3",
         "decodelabs/monarch": "^0.1.2",
         "decodelabs/stash": "^0.6.3",
+        "decodelabs/systemic": "^0.11.16",
 
         "nesbot/carbon": "^3.9",
         "guzzlehttp/guzzle": "^7.0.1",

@@ -70,10 +70,15 @@ class Generic implements Renderer
     }
 
     public function renderNextRelease(
-        NextRelease $release
-    ): string {
-        $output = "---\n\n";
-        $output .= $this->renderReleaseHeader($release) . "\n\n";
+        NextRelease $release,
+        bool $withHeader = true
+        ): string {
+        $output = '';
+
+        if($withHeader) {
+            $output .= "---\n\n";
+            $output .= $this->renderReleaseHeader($release) . "\n\n";
+        }
 
         if(!empty($release->notes)) {
             $output .= $release->notes . "\n";

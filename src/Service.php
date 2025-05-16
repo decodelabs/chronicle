@@ -49,4 +49,12 @@ interface Service
         DateTimeInterface $from,
         DateTimeInterface $to
     ): array;
+
+
+    public function publishNextRelease(
+        string $name,
+        string $version,
+        string $body,
+        bool $preRelease
+    ): bool;
 }

@@ -30,7 +30,8 @@ interface Renderer
     ): string;
 
     public function renderNextRelease(
-        NextRelease $release
+        NextRelease $release,
+        bool $withHeader = true
     ): string;
 
     public function renderParsedRelease(

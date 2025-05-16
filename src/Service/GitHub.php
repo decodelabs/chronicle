@@ -204,4 +204,24 @@ class GitHub implements Service
 
         return $output;
     }
+
+
+    public function publishNextRelease(
+        string $name,
+        string $version,
+        string $body,
+        bool $preRelease
+    ): bool {
+        [$vendor, $package] = explode('/', $name, 2);
+
+        // @phpstan-ignore-next-line
+        $this->client->api('repo')->releases()->create($vendor, $package, [
+            'tag_name' => $version,
+            'name' => $version,
+            'body' => $body,
+            'prerelease' => $preRelease
+        ]);
+
+        return true;
+    }
 }
