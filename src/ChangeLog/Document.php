@@ -100,6 +100,20 @@ class Document implements Stringable
                     false
                 );
 
+                if($version === VersionChange::Breaking) {
+                    if($lastVersion->isLessThan(SemverVersion::parse('1.0.0'))) {
+                        $version = VersionChange::Minor;
+                    } else {
+                        $version = VersionChange::Major;
+                    }
+                } elseif($version === VersionChange::Feature) {
+                    if($lastVersion->isLessThan(SemverVersion::parse('1.0.0'))) {
+                        $version = VersionChange::Patch;
+                    } else {
+                        $version = VersionChange::Minor;
+                    }
+                }
+
                 $version = 'v' . $lastVersion->inc($version->value);
             } else {
                 $version = 'v0.1.0';

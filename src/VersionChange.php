@@ -21,4 +21,7 @@ enum VersionChange: int implements NamedInt
     case Minor = Inc::MINOR;
     case Patch = Inc::PATCH;
     case PreRelease = Inc::PRE_RELEASE;
+
+    case Breaking = 999;
+    case Feature = 99;
 }
