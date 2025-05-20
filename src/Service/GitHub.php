@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace DecodeLabs\Chronicle\Service;
 
+use Carbon\Carbon;
 use DateTimeInterface;
 use DecodeLabs\Chronicle\ChangeLog\Block\Issue;
 use DecodeLabs\Chronicle\ChangeLog\Block\PullRequest;
@@ -24,7 +25,7 @@ class GitHub implements Service
 {
     protected ApiClient $client {
         get {
-            if(isset($this->client)) {
+            if (isset($this->client)) {
                 return $this->client;
             }
 
@@ -34,7 +35,7 @@ class GitHub implements Service
                 Stash::loadStealth(self::class)
             );
 
-            if(null !== ($token = Dovetail::envString('GITHUB_TOKEN'))) {
+            if (null !== ($token = Dovetail::envString('GITHUB_TOKEN'))) {
                 $this->client->authenticate(
                     $token,
                     null,
@@ -49,7 +50,7 @@ class GitHub implements Service
     public function parseName(
         string $url
     ): string {
-        if(str_starts_with($url, 'git@')) {
+        if (str_starts_with($url, 'git@')) {
             $url = (string)preg_replace(
                 '#^git@github\.com:(.*)\.git$#',
                 'https://github.com/$1',
@@ -59,7 +60,7 @@ class GitHub implements Service
 
         $parts = parse_url($url);
 
-        if(!isset($parts['path'])) {
+        if (!isset($parts['path'])) {
             throw Exceptional::InvalidArgument(
                 message: 'Invalid URL',
                 data: $url
@@ -68,7 +69,7 @@ class GitHub implements Service
 
         $path = trim($parts['path'], '/');
 
-        if(!preg_match('#^[a-zA-Z0-9_.-]+/[a-zA-Z0-9_.-]+$#', $path)) {
+        if (!preg_match('#^[a-zA-Z0-9_.-]+/[a-zA-Z0-9_.-]+$#', $path)) {
             throw Exceptional::InvalidArgument(
                 message: 'Invalid URL',
                 data: $url
@@ -111,17 +112,24 @@ class GitHub implements Service
             // @phpstan-ignore-next-line
             $pullRequests = $this->client->api('pull_request')->all($vendor, $package, [
                 'state' => 'closed',
-                'since' => $from->format('c'),
-                'until' => $to->format('c'),
             ]);
-        } catch(GithubRuntimeException $e) {
+        } catch (GithubRuntimeException $e) {
             return [];
         }
 
         $output = [];
 
-        foreach($pullRequests as $record) {
-            if($record['merged_at'] === null) {
+        foreach ($pullRequests as $record) {
+            if ($record['merged_at'] === null) {
+                continue;
+            }
+
+            $date = Carbon::parse($record['merged_at']);
+
+            if (
+                $date->lt($from) ||
+                $date->gt($to)
+            ) {
                 continue;
             }
 
@@ -130,7 +138,7 @@ class GitHub implements Service
                 $record['number'],
                 $record['html_url'],
                 $record['merged_by']['login'] ?? null,
-                $record['merged_at'] ?? null,
+                $date,
                 array_map(
                     static fn($label) => $label['name'],
                     $record['labels']
@@ -138,7 +146,7 @@ class GitHub implements Service
             );
         }
 
-        usort($output, function(
+        usort($output, function (
             PullRequest $a,
             PullRequest $b
         ) {
@@ -167,14 +175,14 @@ class GitHub implements Service
                 'since' => $from->format('c'),
                 'until' => $to->format('c'),
             ]);
-        } catch(GithubRuntimeException $e) {
+        } catch (GithubRuntimeException $e) {
             return [];
         }
 
         $output = [];
 
-        foreach($issues as $record) {
-            if($record['state_reason'] !== 'completed') {
+        foreach ($issues as $record) {
+            if ($record['state_reason'] !== 'completed') {
                 continue;
             }
 
@@ -190,12 +198,12 @@ class GitHub implements Service
                 )
             );
 
-            if(isset($record['type'])) {
+            if (isset($record['type'])) {
                 $issue->labels[] = lcfirst($record['type']['name']);
             }
         }
 
-        usort($output, function(
+        usort($output, function (
             Issue $a,
             Issue $b
         ) {
