@@ -16,10 +16,19 @@ use DecodeLabs\Chronicle\ChangeLog\Block\Issue;
 use DecodeLabs\Chronicle\ChangeLog\Block\PullRequest;
 use DecodeLabs\Chronicle\ChangeLog\Block\Release;
 use DecodeLabs\Chronicle\ChangeLog\Block\Unreleased;
+use DecodeLabs\Chronicle\ChangeLog\Options;
 use DecodeLabs\Chronicle\ChangeLog\Renderer;
 
 class Generic implements Renderer
 {
+    protected(set) Options $options;
+
+    public function __construct(
+        ?Options $options = null
+    ) {
+        $this->options = $options ?? new Options();
+    }
+
     public function generatePreamble(): StandardPreamble
     {
         return new StandardPreamble();
@@ -119,7 +128,10 @@ class Generic implements Renderer
         $output = $issue->title . ' ';
         $output .= '\[[' . $issue->number . '](' . $issue->url . ')\]';
 
-        if($issue->username !== null) {
+        if(
+            $this->options->issueAssignees &&
+            $issue->username !== null
+        ) {
             $output .= ' - @' . $issue->username;
         }
 
@@ -132,7 +144,10 @@ class Generic implements Renderer
         $output = $issue->title . ' ';
         $output .= '\[[' . $issue->number . '](' . $issue->url . ')\]';
 
-        if($issue->username !== null) {
+        if(
+            $this->options->pullRequestAssignees &&
+            $issue->username !== null
+        ) {
             $output .= ' - @' . $issue->username;
         }
 
