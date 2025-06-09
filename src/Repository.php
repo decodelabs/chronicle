@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace DecodeLabs\Chronicle;
 
+use Carbon\Carbon;
 use DecodeLabs\Atlas\Dir;
 use DecodeLabs\Chronicle\ChangeLog\Document;
 use DecodeLabs\Chronicle\ChangeLog\Block\Buffered\NextRelease;
@@ -220,6 +221,22 @@ class Repository
         }
 
         return $output;
+    }
+
+    public function getTagDate(
+        string $tag
+    ): ?Carbon {
+        if(null === ($result = $this->askGit('log', '-1', '--format=%ai', $tag))) {
+            return null;
+        }
+
+        $date = Carbon::parse($result);
+
+        if(!$date->isValid()) {
+            return null;
+        }
+
+        return $date;
     }
 
 

@@ -145,7 +145,6 @@ class Document implements Stringable
 
         $version = $this->validateNextVersion($version);
         $lastRelease = $this->getLastRelease();
-        $lastDate = null;
 
         if($lastRelease) {
             $compareUrl = $repository?->service?->getReleaseCompareUrl(
@@ -154,7 +153,7 @@ class Document implements Stringable
                 $version
             );
 
-            $lastDate = $lastRelease->date;
+            $lastDate = $repository?->getTagDate($lastRelease->version) ?? $lastRelease->date;
         } else {
             $compareUrl = null;
         }

@@ -166,6 +166,8 @@ class GitHub implements Service
         DateTimeInterface $to
     ): array {
         [$vendor, $package] = explode('/', $name, 2);
+        $from = Carbon::parse($from);
+        $to = Carbon::parse($to);
 
 
         try {
@@ -186,7 +188,7 @@ class GitHub implements Service
                 continue;
             }
 
-            $output[] = $issue = new Issue(
+            $issue = new Issue(
                 $record['title'],
                 $record['number'],
                 $record['html_url'],
@@ -198,9 +200,19 @@ class GitHub implements Service
                 )
             );
 
+            if(
+                !$issue->closeDate ||
+                $from->gt($issue->closeDate) ||
+                $to->lt($issue->closeDate)
+            ) {
+                continue;
+            }
+
             if (isset($record['type'])) {
                 $issue->labels[] = lcfirst($record['type']['name']);
             }
+
+            $output[] = $issue;
         }
 
         usort($output, function (
