@@ -20,7 +20,7 @@ trait ReleaseTrait
         set(
             string|Carbon|null $value
         ) {
-            if(is_string($value)) {
+            if (is_string($value)) {
                 $value = Carbon::parse($value);
             }
 

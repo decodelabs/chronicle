@@ -16,18 +16,17 @@ use DecodeLabs\Chronicle\ChangeLog\Block\Buffered\NextRelease;
 use DecodeLabs\Chronicle\ChangeLog\Block\Preamble;
 use DecodeLabs\Chronicle\ChangeLog\Block\Release;
 use DecodeLabs\Chronicle\ChangeLog\Block\Unreleased;
-use DecodeLabs\Chronicle\ChangeLog\Renderer;
 use DecodeLabs\Chronicle\ChangeLog\Renderer\Generic as GenericRenderer;
 use DecodeLabs\Chronicle\Repository;
 use DecodeLabs\Chronicle\VersionChange;
 use DecodeLabs\Exceptional;
 use Stringable;
-use z4kn4fein\SemVer\Version as SemVerVersion;
 use z4kn4fein\SemVer\SemverException;
+use z4kn4fein\SemVer\Version as SemVerVersion;
 
 class Document implements Stringable
 {
-    protected(set) string $path;
+    public protected(set) string $path;
 
     public ?Preamble $preamble = null;
     public ?Unreleased $unreleased = null;
@@ -35,7 +34,7 @@ class Document implements Stringable
     /**
      * @var array<string,Release>
      */
-    protected(set) array $releases = [];
+    public protected(set) array $releases = [];
 
     public function __construct(
         string $path
@@ -86,31 +85,31 @@ class Document implements Stringable
     public function validateNextVersion(
         string|VersionChange $version
     ): string {
-        if(is_string($version)) {
+        if (is_string($version)) {
             try {
                 $version = 'v' . SemverVersion::parse($version, false);
-            } catch(SemverException $e) {
+            } catch (SemverException $e) {
                 $version = VersionChange::fromName($version);
             }
         }
 
         $lastRelease = $this->getLastRelease();
 
-        if($version instanceof VersionChange) {
-            if($lastRelease) {
+        if ($version instanceof VersionChange) {
+            if ($lastRelease) {
                 $lastVersion = SemverVersion::parse(
                     $lastRelease->version,
                     false
                 );
 
-                if($version === VersionChange::Breaking) {
-                    if($lastVersion->isLessThan(SemverVersion::parse('1.0.0'))) {
+                if ($version === VersionChange::Breaking) {
+                    if ($lastVersion->isLessThan(SemverVersion::parse('1.0.0'))) {
                         $version = VersionChange::Minor;
                     } else {
                         $version = VersionChange::Major;
                     }
-                } elseif($version === VersionChange::Feature) {
-                    if($lastVersion->isLessThan(SemverVersion::parse('1.0.0'))) {
+                } elseif ($version === VersionChange::Feature) {
+                    if ($lastVersion->isLessThan(SemverVersion::parse('1.0.0'))) {
                         $version = VersionChange::Patch;
                     } else {
                         $version = VersionChange::Minor;
@@ -123,7 +122,7 @@ class Document implements Stringable
             }
         }
 
-        if(isset($this->releases[$version])) {
+        if (isset($this->releases[$version])) {
             throw Exceptional::InvalidArgument(
                 'Next version already exists in changelog'
             );
@@ -139,14 +138,14 @@ class Document implements Stringable
     ): void {
         $date ??= Carbon::now();
 
-        if(is_string($date)) {
+        if (is_string($date)) {
             $date = Carbon::parse($date);
         }
 
         $version = $this->validateNextVersion($version);
         $lastRelease = $this->getLastRelease();
 
-        if($lastRelease) {
+        if ($lastRelease) {
             $compareUrl = $repository?->service?->getReleaseCompareUrl(
                 (string)$repository?->name,
                 $lastRelease->version,
@@ -170,13 +169,13 @@ class Document implements Stringable
 
         $nextRelease->notes = $this->unreleased?->extractAsNotes();
 
-        if(
+        if (
             !empty($this->releases) &&
             $lastRelease &&
             $repository &&
             $repository->service
         ) {
-            if(!$lastDate) {
+            if (!$lastDate) {
                 throw Exceptional::Runtime(
                     'Last release date could not be parsed from changelog'
                 );
@@ -209,7 +208,7 @@ class Document implements Stringable
 
         if ($this->preamble) {
             $output .= $this->preamble->render($renderer) . "\n\n";
-        } elseif($preamble = $renderer->generatePreamble()) {
+        } elseif ($preamble = $renderer->generatePreamble()) {
             $output .= $preamble->render($renderer) . "\n\n";
         }
 
@@ -221,7 +220,7 @@ class Document implements Stringable
             $output .= $release->render($renderer) . "\n\n";
         }
 
-        return trim($output)."\n";
+        return trim($output) . "\n";
     }
 
     public function save(
@@ -238,7 +237,7 @@ class Document implements Stringable
 
     private function sortReleases(): void
     {
-        usort($this->releases, function($a, $b) {
+        usort($this->releases, function ($a, $b) {
             return SemVerVersion::compareString(
                 ltrim($b->version, 'v'),
                 ltrim($a->version, 'v'),

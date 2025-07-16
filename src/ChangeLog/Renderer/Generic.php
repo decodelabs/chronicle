@@ -11,8 +11,8 @@ namespace DecodeLabs\Chronicle\ChangeLog\Renderer;
 
 use DecodeLabs\Chronicle\ChangeLog\Block\Buffered\NextRelease;
 use DecodeLabs\Chronicle\ChangeLog\Block\Buffered\StandardPreamble;
-use DecodeLabs\Chronicle\ChangeLog\Block\Parsed\Release as ParsedRelease;
 use DecodeLabs\Chronicle\ChangeLog\Block\Issue;
+use DecodeLabs\Chronicle\ChangeLog\Block\Parsed\Release as ParsedRelease;
 use DecodeLabs\Chronicle\ChangeLog\Block\PullRequest;
 use DecodeLabs\Chronicle\ChangeLog\Block\Release;
 use DecodeLabs\Chronicle\ChangeLog\Block\Unreleased;
@@ -21,7 +21,7 @@ use DecodeLabs\Chronicle\ChangeLog\Renderer;
 
 class Generic implements Renderer
 {
-    protected(set) Options $options;
+    public protected(set) Options $options;
 
     public function __construct(
         ?Options $options = null
@@ -47,13 +47,13 @@ class Generic implements Renderer
 
         $url = $release->commitsUrl ?? $release->compareUrl;
 
-        if($url !== null) {
+        if ($url !== null) {
             $output .= '[' . $release->version . '](' . $url . ')';
         } else {
             $output .= $release->version;
         }
 
-        if($release->date) {
+        if ($release->date) {
             $output .= ' - ' . $release->date->format('jS F Y');
         }
 
@@ -65,13 +65,13 @@ class Generic implements Renderer
     ): string {
         $output = "---\n\n";
 
-        if($release->header) {
+        if ($release->header) {
             $output .= rtrim($release->header) . "\n\n";
         } else {
             $output .= $this->renderReleaseHeader($release) . "\n\n";
         }
 
-        if(!empty($release->body)) {
+        if (!empty($release->body)) {
             $output .= implode("\n", $release->body);
         }
 
@@ -81,37 +81,37 @@ class Generic implements Renderer
     public function renderNextRelease(
         NextRelease $release,
         bool $withHeader = true
-        ): string {
+    ): string {
         $output = '';
 
-        if($withHeader) {
+        if ($withHeader) {
             $output .= "---\n\n";
             $output .= $this->renderReleaseHeader($release) . "\n\n";
         }
 
-        if(!empty($release->notes)) {
+        if (!empty($release->notes)) {
             $output .= $release->notes . "\n";
         }
 
-        if(!empty($release->pullRequests)) {
+        if (!empty($release->pullRequests)) {
             $output .= "\n";
             $output .= '#### Merged Pull Requests' . "\n";
 
-            foreach($release->pullRequests as $issue) {
+            foreach ($release->pullRequests as $issue) {
                 $output .= '- ' . $this->renderPullRequest($issue) . "\n";
             }
         }
 
-        if(!empty($release->issues)) {
+        if (!empty($release->issues)) {
             $output .= "\n";
             $output .= '#### Closed Issues' . "\n";
 
-            foreach($release->issues as $issue) {
+            foreach ($release->issues as $issue) {
                 $output .= '- ' . $this->renderIssue($issue) . "\n";
             }
         }
 
-        if(
+        if (
             $release->commitsUrl &&
             $release->compareUrl
         ) {
@@ -128,7 +128,7 @@ class Generic implements Renderer
         $output = $issue->title . ' ';
         $output .= '\[[' . $issue->number . '](' . $issue->url . ')\]';
 
-        if(
+        if (
             $this->options->issueAssignees &&
             $issue->username !== null
         ) {
@@ -144,7 +144,7 @@ class Generic implements Renderer
         $output = $issue->title . ' ';
         $output .= '\[[' . $issue->number . '](' . $issue->url . ')\]';
 
-        if(
+        if (
             $this->options->pullRequestAssignees &&
             $issue->username !== null
         ) {

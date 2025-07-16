@@ -30,7 +30,7 @@ class Unreleased implements Parsed, UnreleasedInterface
     ): void {
         $this->body = $this->trim($this->body);
 
-        if($rewrite) {
+        if ($rewrite) {
             $this->header = null;
             $this->body = $this->starToDash($this->body);
         }
@@ -38,14 +38,14 @@ class Unreleased implements Parsed, UnreleasedInterface
 
     public function extractAsNotes(): ?string
     {
-        if(empty($this->body)) {
+        if (empty($this->body)) {
             return null;
         }
 
         $output = implode("\n", $this->body);
         $output = trim($output);
 
-        if($output === '--') {
+        if ($output === '--') {
             $output = null;
         }
 
@@ -58,13 +58,13 @@ class Unreleased implements Parsed, UnreleasedInterface
     ): string {
         $output = '';
 
-        if($this->header !== null) {
+        if ($this->header !== null) {
             $output .= $this->header . "\n";
         } else {
             $output .= $renderer->renderUnreleasedHeader($this) . "\n";
         }
 
-        if(!empty($this->body)) {
+        if (!empty($this->body)) {
             $output .= implode("\n", $this->body);
         }
 

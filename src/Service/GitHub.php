@@ -140,7 +140,7 @@ class GitHub implements Service
                 $record['merged_by']['login'] ?? null,
                 $date,
                 array_map(
-                    static fn($label) => $label['name'],
+                    static fn ($label) => $label['name'],
                     $record['labels']
                 )
             );
@@ -195,12 +195,12 @@ class GitHub implements Service
                 $record['closed_by']['login'] ?? null,
                 $record['closed_at'] ?? null,
                 array_map(
-                    static fn($label) => $label['name'],
+                    static fn ($label) => $label['name'],
                     $record['labels']
                 )
             );
 
-            if(
+            if (
                 !$issue->closeDate ||
                 $from->gt($issue->closeDate) ||
                 $to->lt($issue->closeDate)

@@ -11,8 +11,8 @@ namespace DecodeLabs\Chronicle;
 
 use Carbon\Carbon;
 use DecodeLabs\Atlas\Dir;
-use DecodeLabs\Chronicle\ChangeLog\Document;
 use DecodeLabs\Chronicle\ChangeLog\Block\Buffered\NextRelease;
+use DecodeLabs\Chronicle\ChangeLog\Document;
 use DecodeLabs\Chronicle\ChangeLog\Renderer;
 use DecodeLabs\Chronicle\ChangeLog\Renderer\Generic as GenericRenderer;
 use DecodeLabs\Chronicle\Service\GitHub as GitHubService;
@@ -23,22 +23,22 @@ use z4kn4fein\SemVer\Version as SemVerVersion;
 
 class Repository
 {
-    protected(set) string $path;
+    public protected(set) string $path;
 
     public ?string $originUrl {
         get {
-            if(
+            if (
                 isset($this->originUrl) &&
                 $this->originUrl !== ''
             ) {
                 return $this->originUrl;
             }
 
-            if(isset($this->originUrl)) {
+            if (isset($this->originUrl)) {
                 return null;
             }
 
-            if(!is_file($this->path . '/.git/config')) {
+            if (!is_file($this->path . '/.git/config')) {
                 throw Exceptional::Runtime(
                     'No .git/config file found in ' . $this->path
                 );
@@ -46,7 +46,7 @@ class Repository
 
             $config = $this->loadGitConfig();
 
-            if(!isset($config['remote origin']['url'])) {
+            if (!isset($config['remote origin']['url'])) {
                 $this->originUrl = '';
                 return null;
             }
@@ -63,15 +63,15 @@ class Repository
 
     public ?Service $service {
         get {
-            if(isset($this->service)) {
+            if (isset($this->service)) {
                 return $this->service;
             }
 
-            if(null === ($originUrl = $this->originUrl)) {
+            if (null === ($originUrl = $this->originUrl)) {
                 return null;
             }
 
-            if(str_contains($originUrl, 'github.com')) {
+            if (str_contains($originUrl, 'github.com')) {
                 return $this->service = new GitHubService();
             }
 
@@ -97,7 +97,7 @@ class Repository
         $fileName = $fileName ?? 'CHANGELOG.md';
         $path = $this->path . '/' . $fileName;
 
-        if(
+        if (
             !$rewrite &&
             !is_file($path)
         ) {
@@ -121,7 +121,7 @@ class Repository
             return $this->gitConfig;
         }
 
-        if(false === ($output = parse_ini_file($this->path . '/.git/config', true))) {
+        if (false === ($output = parse_ini_file($this->path . '/.git/config', true))) {
             throw Exceptional::Runtime(
                 'Failed to load git config'
             );
@@ -145,7 +145,7 @@ class Repository
     {
         $result = $this->askGit('status', '--porcelain');
 
-        if($result === null) {
+        if ($result === null) {
             throw Exceptional::Runtime(
                 'Failed to check for uncommitted changes'
             );
@@ -163,22 +163,22 @@ class Repository
     {
         $output = [];
 
-        if(null === ($result = $this->askGit('branch', '--list'))) {
+        if (null === ($result = $this->askGit('branch', '--list'))) {
             throw Exceptional::Runtime(
                 'Failed to retrieve git branches'
             );
         }
 
-        foreach(explode("\n", $result) as $line) {
+        foreach (explode("\n", $result) as $line) {
             $line = trim($line);
 
-            if($line === '') {
+            if ($line === '') {
                 continue;
             }
 
             $active = false;
 
-            if(str_starts_with($line, '*')) {
+            if (str_starts_with($line, '*')) {
                 $line = substr($line, 1);
                 $active = true;
             }
@@ -204,16 +204,16 @@ class Repository
     {
         $output = [];
 
-        if(null === ($result = $this->askGit('tag', '--list'))) {
+        if (null === ($result = $this->askGit('tag', '--list'))) {
             throw Exceptional::Runtime(
                 'Failed to retrieve git tags'
             );
         }
 
-        foreach(explode("\n", $result) as $line) {
+        foreach (explode("\n", $result) as $line) {
             $line = trim($line);
 
-            if($line === '') {
+            if ($line === '') {
                 continue;
             }
 
@@ -226,13 +226,13 @@ class Repository
     public function getTagDate(
         string $tag
     ): ?Carbon {
-        if(null === ($result = $this->askGit('log', '-1', '--format=%ai', $tag))) {
+        if (null === ($result = $this->askGit('log', '-1', '--format=%ai', $tag))) {
             return null;
         }
 
         $date = Carbon::parse($result);
 
-        if(!$date->isValid()) {
+        if (!$date->isValid()) {
             return null;
         }
 
@@ -245,7 +245,7 @@ class Repository
         NextRelease $release,
         ?Renderer $renderer = null,
     ): bool {
-        if(
+        if (
             !$this->service ||
             !$this->name
         ) {

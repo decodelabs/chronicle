@@ -14,5 +14,6 @@ class Options
     public function __construct(
         protected(set) bool $issueAssignees = true,
         protected(set) bool $pullRequestAssignees = true,
-    ) {}
+    ) {
+    }
 }

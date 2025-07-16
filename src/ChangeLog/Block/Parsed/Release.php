@@ -34,7 +34,7 @@ class Release implements Parsed, ReleaseInterface
     ): void {
         $this->body = $this->trim($this->body);
 
-        if($rewrite) {
+        if ($rewrite) {
             $this->header = null;
 
             if (preg_match('/^([#\>]+) (([0-9]{1,2})(st|nd|rd|th)? ([A-Za-z]+) ([0-9]{4}))$/', $this->body[0] ?? '', $matches)) {
@@ -45,16 +45,16 @@ class Release implements Parsed, ReleaseInterface
 
             $this->body = $this->starToDash($this->body);
 
-            if($this->compareUrl !== null) {
+            if ($this->compareUrl !== null) {
                 $inBody = false;
 
-                foreach($this->body as $key => $line) {
-                    if(str_contains($line, $this->compareUrl)) {
+                foreach ($this->body as $key => $line) {
+                    if (str_contains($line, $this->compareUrl)) {
                         $inBody = true;
                     }
                 }
 
-                if(!$inBody) {
+                if (!$inBody) {
                     $this->body[] = "\n" . '[Full list of changes](' . $this->compareUrl . ')';
                 }
             }
@@ -67,4 +67,3 @@ class Release implements Parsed, ReleaseInterface
         return $renderer->renderParsedRelease($this);
     }
 }
-

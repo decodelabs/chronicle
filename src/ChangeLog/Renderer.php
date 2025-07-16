@@ -10,8 +10,8 @@ declare(strict_types=1);
 namespace DecodeLabs\Chronicle\ChangeLog;
 
 use DecodeLabs\Chronicle\ChangeLog\Block\Buffered\NextRelease;
-use DecodeLabs\Chronicle\ChangeLog\Block\Parsed\Release as ParsedRelease;
 use DecodeLabs\Chronicle\ChangeLog\Block\Issue;
+use DecodeLabs\Chronicle\ChangeLog\Block\Parsed\Release as ParsedRelease;
 use DecodeLabs\Chronicle\ChangeLog\Block\Preamble;
 use DecodeLabs\Chronicle\ChangeLog\Block\PullRequest;
 use DecodeLabs\Chronicle\ChangeLog\Block\Release;

@@ -27,7 +27,7 @@ trait BlockTrait
 
         while (
             count($lines) &&
-            match(trim($lines[count($lines) - 1])) {
+            match (trim($lines[count($lines) - 1])) {
                 '',
                 '---' => true,
                 default => false
@@ -46,8 +46,8 @@ trait BlockTrait
     protected function starToDash(
         array $lines,
     ): array {
-        foreach($lines as $key => $line) {
-            if(str_starts_with($line, '* ')) {
+        foreach ($lines as $key => $line) {
+            if (str_starts_with($line, '* ')) {
                 $lines[$key] = '- ' . substr($line, 2);
             }
         }

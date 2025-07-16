@@ -17,21 +17,21 @@ use DecodeLabs\Exceptional;
 
 class Parser
 {
-    protected(set) string $path;
-    protected(set) bool $rewrite = false;
+    public protected(set) string $path;
+    public protected(set) bool $rewrite = false;
 
     public function __construct(
         string $path,
         bool $rewrite = false
     ) {
-        if(!str_ends_with($path, '.md')) {
+        if (!str_ends_with($path, '.md')) {
             throw Exceptional::InvalidArgument(
                 message: 'Changelog is not a markdown file',
                 data: $path
             );
         }
 
-        if(
+        if (
             !is_file($path) &&
             !$rewrite
         ) {
@@ -51,20 +51,20 @@ class Parser
         $doc = new Document($this->path);
         $releases = [];
 
-        foreach($this->parseFile() as $block) {
-            if($block instanceof Preamble) {
+        foreach ($this->parseFile() as $block) {
+            if ($block instanceof Preamble) {
                 $block->consolidate($this->rewrite);
                 $doc->preamble = $block;
                 continue;
             }
 
-            if($block instanceof Unreleased) {
+            if ($block instanceof Unreleased) {
                 $block->consolidate($this->rewrite);
                 $doc->unreleased = $block;
                 continue;
             }
 
-            if($block instanceof Release) {
+            if ($block instanceof Release) {
                 $releases[] = $block;
                 continue;
             }
@@ -74,19 +74,19 @@ class Parser
         $previousVersion = null;
         $service = $repository?->service;
 
-        foreach(array_reverse($releases) as $release) {
-            if(
+        foreach (array_reverse($releases) as $release) {
+            if (
                 $this->rewrite &&
                 $repository
             ) {
-                if($release->commitsUrl === null) {
+                if ($release->commitsUrl === null) {
                     $release->commitsUrl = $service?->getReleaseCommitsUrl(
                         (string)$repository->name,
                         $release->version
                     );
                 }
 
-                if(
+                if (
                     $release->compareUrl === null &&
                     $previousVersion !== null
                 ) {
@@ -112,7 +112,7 @@ class Parser
      */
     private function parseFile(): iterable
     {
-        if(!is_file($this->path)) {
+        if (!is_file($this->path)) {
             return;
         }
 
@@ -121,24 +121,24 @@ class Parser
         $preambled = false;
         $unreleased = false;
 
-        while(!empty($lines)) {
+        while (!empty($lines)) {
             $line = array_shift($lines);
 
-            if(
+            if (
                 (!$unreleased && ($newBlock = $this->parseUnreleased($line))) ||
                 (!$preambled && ($newBlock = $this->parsePreamble($line))) ||
                 ($newBlock = $this->parseReleaseHeader($line))
             ) {
                 $preambled = true;
 
-                if(
+                if (
                     $newBlock instanceof Unreleased ||
                     $newBlock instanceof Release
                 ) {
                     $unreleased = true;
                 }
 
-                if($block !== null) {
+                if ($block !== null) {
                     yield $block;
                 }
 
@@ -146,14 +146,14 @@ class Parser
                 continue;
             }
 
-            if(!$block) {
+            if (!$block) {
                 $block = new Preamble();
             }
 
             $block->body[] = $line;
         }
 
-        if($block) {
+        if ($block) {
             yield $block;
         }
     }
@@ -161,7 +161,7 @@ class Parser
     private function parsePreamble(
         string $line,
     ): ?Preamble {
-        if(
+        if (
             !preg_match('/^[#]{1,6}/', $line) ||
             preg_match('/(v?[0-9]+\.[0-9]+\.[0-9]+)/', $line)
         ) {
@@ -176,7 +176,7 @@ class Parser
     private function parseUnreleased(
         string $line,
     ): ?Unreleased {
-        if(!preg_match('/^[#]{1,6} \[?Unreleased\]?$/', $line)) {
+        if (!preg_match('/^[#]{1,6} \[?Unreleased\]?$/', $line)) {
             return null;
         }
 
@@ -188,7 +188,7 @@ class Parser
     private function parseReleaseHeader(
         string $line
     ): ?Release {
-        if(!preg_match('/^[#]{1,6}.*[^v.](v?[0-9]+\.[0-9]+\.[0-9]+)([^.]|$)/', $line, $matches)) {
+        if (!preg_match('/^[#]{1,6}.*[^v.](v?[0-9]+\.[0-9]+\.[0-9]+)([^.]|$)/', $line, $matches)) {
             return null;
         }
 
@@ -196,15 +196,15 @@ class Parser
         $output->header = $line;
         $output->version = $matches[1];
 
-        if(preg_match('/([0-9]{4}-[0-9]{2}-[0-9]{2})/', $line, $matches) === 1) {
+        if (preg_match('/([0-9]{4}-[0-9]{2}-[0-9]{2})/', $line, $matches) === 1) {
             $output->date = $matches[1];
-        } elseif(preg_match('/([0-9]{1,2})(st|nd|rd|th)? ([A-Za-z]+) ([0-9]{4})/', $line, $matches) === 1) {
+        } elseif (preg_match('/([0-9]{1,2})(st|nd|rd|th)? ([A-Za-z]+) ([0-9]{4})/', $line, $matches) === 1) {
             $output->date = $matches[1] . ' ' . $matches[3] . ' ' . $matches[4];
         }
 
-        if(preg_match('|https://github\.com/[^/]+/[^/]+/compare/[v0-9.]+|', $line, $matches)) {
+        if (preg_match('|https://github\.com/[^/]+/[^/]+/compare/[v0-9.]+|', $line, $matches)) {
             $output->compareUrl = $matches[0];
-        } elseif(preg_match('|https://github\.com/[^/]+/[^/]+/commits/[v0-9.]+|', $line, $matches)) {
+        } elseif (preg_match('|https://github\.com/[^/]+/[^/]+/commits/[v0-9.]+|', $line, $matches)) {
             $output->commitsUrl = $matches[0];
         }
 

@@ -28,7 +28,7 @@ class Preamble implements Parsed, PreambleInterface
     ): void {
         $this->body = $this->trim($this->body);
 
-        if($rewrite) {
+        if ($rewrite) {
             $this->body = $this->starToDash($this->body);
         }
     }
