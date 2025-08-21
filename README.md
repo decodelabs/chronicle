@@ -23,13 +23,17 @@ composer require decodelabs/chronicle
 
 ## Usage
 
-Open a `Repository` in the root of your project - if you don't pass a path, the repository will use your project root defined via `Monarch`.
+Open a `Repository` in the root of your project and pass in a `Systemic` service instance.
 
 ```php
 use DecodeLabs\Chronicle\Repository;
+use DecodeLabs\Monarch;
+use DecodeLabs\Systemic;
 
-$repo = new Repository();
-$repo = new Repository('/path/to/your/repo');
+$repo = new Repository(
+    '/path/to/your/repo',
+    Monarch::getService(Systemic::class)
+);
 ```
 
 Parse your existing change log file - name defaults to `CHANGELOG.md`. Set rewrite to `true` to reformat release headers and layout in Chronicle's format - useful for converting existing change logs.

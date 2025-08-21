@@ -17,8 +17,8 @@ use DecodeLabs\Chronicle\ChangeLog\Renderer;
 use DecodeLabs\Chronicle\ChangeLog\Renderer\Generic as GenericRenderer;
 use DecodeLabs\Chronicle\Service\GitHub as GitHubService;
 use DecodeLabs\Exceptional;
-use DecodeLabs\Monarch;
 use DecodeLabs\Systemic;
+use DecodeLabs\Slingshot;
 use z4kn4fein\SemVer\Version as SemVerVersion;
 
 class Repository
@@ -72,7 +72,7 @@ class Repository
             }
 
             if (str_contains($originUrl, 'github.com')) {
-                return $this->service = new GitHubService();
+                return $this->service = new Slingshot()->resolveInstance(GitHubService::class);
             }
 
             return null;
@@ -85,9 +85,10 @@ class Repository
     private ?array $gitConfig = null;
 
     public function __construct(
-        string|Dir|null $path = null,
+        string|Dir $path,
+        protected Systemic $systemic
     ) {
-        $this->path = (string)($path ?? Monarch::$paths->root);
+        $this->path = (string)$path;
     }
 
     public function parseChangeLog(
@@ -271,7 +272,7 @@ class Repository
         string $name,
         string ...$args
     ): ?string {
-        $result = Systemic::capture(
+        $result = $this->systemic->capture(
             ['git', $name, ...$args],
             $this->path
         );

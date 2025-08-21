@@ -14,7 +14,7 @@ use DateTimeInterface;
 use DecodeLabs\Chronicle\ChangeLog\Block\Issue;
 use DecodeLabs\Chronicle\ChangeLog\Block\PullRequest;
 use DecodeLabs\Chronicle\Service;
-use DecodeLabs\Dovetail;
+use DecodeLabs\Dovetail\Env;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Stash;
 use Github\AuthMethod;
@@ -32,10 +32,10 @@ class GitHub implements Service
             $this->client = new ApiClient();
 
             $this->client->addCache(
-                Stash::loadStealth(self::class)
+                $this->stash->loadStealth(self::class)
             );
 
-            if (null !== ($token = Dovetail::envString('GITHUB_TOKEN'))) {
+            if (null !== ($token = Env::tryString('GITHUB_TOKEN'))) {
                 $this->client->authenticate(
                     $token,
                     null,
@@ -45,6 +45,11 @@ class GitHub implements Service
 
             return $this->client;
         }
+    }
+
+    public function __construct(
+        protected Stash $stash
+    ) {
     }
 
     public function parseName(

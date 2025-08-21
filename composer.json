@@ -11,18 +11,18 @@
     "require": {
         "php": "^8.4",
 
-        "decodelabs/atlas": "^0.13",
-        "decodelabs/dovetail": "^0.2.12",
-        "decodelabs/enumerable": "^0.2.1",
-        "decodelabs/exceptional": "^0.6",
-        "decodelabs/monarch": "^0.1.3",
-        "decodelabs/stash": "^0.6.3",
-        "decodelabs/systemic": "^0.11.16",
+        "decodelabs/atlas": "^0.14",
+        "decodelabs/dovetail": "^0.3",
+        "decodelabs/enumerable": "^0.2.8",
+        "decodelabs/exceptional": "^0.6.3",
+        "decodelabs/slingshot": "^0.3",
+        "decodelabs/stash": "^0.7",
+        "decodelabs/systemic": "^0.12",
 
-        "nesbot/carbon": "^3.9",
-        "guzzlehttp/guzzle": "^7.0.1",
-        "http-interop/http-factory-guzzle": "^1.0",
-        "knplabs/github-api": "^3.0",
+        "nesbot/carbon": "^3",
+        "guzzlehttp/guzzle": "^7",
+        "http-interop/http-factory-guzzle": "^1.2",
+        "knplabs/github-api": "^3.16",
         "z4kn4fein/php-semver": "^3.0"
     },
     "require-dev": {
