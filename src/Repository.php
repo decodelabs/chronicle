@@ -17,8 +17,8 @@ use DecodeLabs\Chronicle\ChangeLog\Renderer;
 use DecodeLabs\Chronicle\ChangeLog\Renderer\Generic as GenericRenderer;
 use DecodeLabs\Chronicle\Service\GitHub as GitHubService;
 use DecodeLabs\Exceptional;
-use DecodeLabs\Systemic;
 use DecodeLabs\Slingshot;
+use DecodeLabs\Systemic;
 use z4kn4fein\SemVer\Version as SemVerVersion;
 
 class Repository
