@@ -237,7 +237,7 @@ class Document implements Stringable
 
     private function sortReleases(): void
     {
-        usort($this->releases, function ($a, $b) {
+        uasort($this->releases, function ($a, $b) {
             return SemVerVersion::compareString(
                 ltrim($b->version, 'v'),
                 ltrim($a->version, 'v'),

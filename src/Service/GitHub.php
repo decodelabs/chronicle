@@ -32,7 +32,7 @@ class GitHub implements Service
             $this->client = new ApiClient();
 
             $this->client->addCache(
-                $this->stash->loadStealth(self::class)
+                $this->stash->load(self::class)
             );
 
             if (null !== ($token = Env::tryString('GITHUB_TOKEN'))) {

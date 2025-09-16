@@ -16,7 +16,7 @@
         "decodelabs/enumerable": "^0.2.8",
         "decodelabs/exceptional": "^0.6.3",
         "decodelabs/slingshot": "^0.3",
-        "decodelabs/stash": "^0.7",
+        "decodelabs/stash": "^0.8",
         "decodelabs/systemic": "^0.12",
 
         "nesbot/carbon": "^3",
