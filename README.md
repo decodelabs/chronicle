@@ -15,6 +15,8 @@ Chronicle provides a set of tools for parsing, generating and rendering release 
 
 ## Installation
 
+This package requires PHP 8.4 or higher.
+
 Install via Composer:
 
 ```bash
