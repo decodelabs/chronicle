@@ -1,8 +1,8 @@
 <?php
 
 /**
- * @package Chronicle
- * @license http://opensource.org/licenses/MIT
+ * Chronicle
+ * @license https://opensource.org/licenses/MIT
  */
 
 declare(strict_types=1);
