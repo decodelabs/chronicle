@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Unreleased
 - Improved doc comment headers
+- Added AGENTS.md
+- Integrated Chorus dev dependency
 - Simplified CI workflow
 
 ---
@@ -95,3 +97,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Built GitHub issue and pull request fetchers
 - Added next release generator
 - Applied breaking and feature version bumpers
+
