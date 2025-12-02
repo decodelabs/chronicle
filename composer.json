@@ -2,7 +2,7 @@
     "name": "decodelabs/chronicle",
     "description": "Release notes generator",
     "type": "library",
-    "keywords": [],
+    "keywords": [ ],
     "license": "MIT",
     "authors": [
         {
@@ -28,7 +28,7 @@
         "z4kn4fein/php-semver": "^3.0"
     },
     "require-dev": {
-        "decodelabs/chorus": "^0.1",
+        "decodelabs/chorus": ">0",
         "decodelabs/phpstan-decodelabs": "^0.7.0"
     },
     "autoload": {
