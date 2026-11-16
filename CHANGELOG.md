@@ -5,11 +5,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Unreleased
+--
+
+---
+
+### [v0.3.2](https://github.com/decodelabs/chronicle/commits/v0.3.2) - 16th November 2026
+
 - Made public read visibility explicit on promoted properties
 - Improved doc comment headers
 - Added AGENTS.md
 - Integrated Chorus dev dependency
 - Simplified CI workflow
+
+[Full list of changes](https://github.com/decodelabs/chronicle/compare/v0.3.1...v0.3.2)
 
 ---
 
@@ -98,4 +106,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Built GitHub issue and pull request fetchers
 - Added next release generator
 - Applied breaking and feature version bumpers
-
