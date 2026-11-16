@@ -12,8 +12,8 @@ namespace DecodeLabs\Chronicle\ChangeLog;
 class Options
 {
     public function __construct(
-        protected(set) bool $issueAssignees = true,
-        protected(set) bool $pullRequestAssignees = true,
+        public protected(set) bool $issueAssignees = true,
+        public protected(set) bool $pullRequestAssignees = true,
     ) {
     }
 }
